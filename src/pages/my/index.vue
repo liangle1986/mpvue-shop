@@ -30,13 +30,15 @@
         this.userInfo = login();
         console.log(this.userInfo);
         this.avator = this.userInfo.avatarUrl;
+        console.log(this.avator);
       }
+      console.log("========1111111111111]");
     },
     created() {},
     mounted() {},
     data() {
       return {
-        avator: "http://yanxuan.nosdn.127.net/8945ae63d940cc42406c3f67019c5cb6.png",
+        avator: "https://yanxuan.nosdn.127.net/8945ae63d940cc42406c3f67019c5cb6.png",
         allcheck: false,
         listData: [],
         Listids: [],

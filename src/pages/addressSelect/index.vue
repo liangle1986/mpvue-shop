@@ -66,7 +66,7 @@ export default {
     },
     async getAddressList() {
       var _this = this;
-      const data = await get("/address/getListAction", {
+      const data = await get("/shop/address/getListAction", {
         openId: _this.openId
       });
       for (var i = 0; i < data.data.length; i++) {

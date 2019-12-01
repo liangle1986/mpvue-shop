@@ -11,14 +11,14 @@
       <swiper class="swiper-container" indicator-dots="true" autoplay="true" interval="3000" circular="true" duration="500">
         <block v-for="(item, index) in banner " :key="index">
           <swiper-item class="swiper-item">
-            <image :src="item.image_url" class="slide-image" />
+            <image :src="item.imageUrl" class="slide-image" />
           </swiper-item>
         </block>
       </swiper>
     </div>
     <div class="channel">
       <div @click="categoryList(item.id)" v-for="(item, index) in channel" :key="index">
-        <img :src="item.icon_url" alt="">
+        <img :src="item.iconUrl" alt="">
         <p>{{item.name}}</p>
       </div>
     </div>
@@ -30,9 +30,9 @@
         <div @click="branddetail(item.id)" v-for="(item, index) in brandList" :key="index">
           <div>
             <p>{{item.name}}</p>
-            <p>{{item.floor_price}}元起</p>
+            <p>{{item.floorPrice}}元起</p>
           </div>
-          <img :src="item.new_pic_url" alt="">
+          <img :src="item.newPicUrl" alt="">
         </div>
       </div>
     </div>
@@ -47,10 +47,10 @@
         <ul>
           <scroll-view class="scroll-view" :scroll-x="true">
             <li @click="goodsDetail(item.id)" v-for="(item, index) in newGoods" :key="index">
-              <img :src="item.list_pic_url" alt="">
+              <img :src="item.listPicUrl" alt="">
               <p>{{item.name}}</p>
-              <p>{{item.goods_brief}}</p>
-              <p>￥{{item.retail_price}}</p>
+              <p>{{item.goodsBrief}}</p>
+              <p>￥{{item.retailPrice}}</p>
             </li>
           </scroll-view>
         </ul>
@@ -68,10 +68,10 @@
         <ul>
           <scroll-view class="scroll-view" :scroll-x="true">
             <li @click="goodsDetail(item.id)" v-for="(item, index) in hotGoods" :key="index">
-              <img :src="item.list_pic_url" alt="">
+              <img :src="item.listPicUrl" alt="">
               <p>{{item.name}}</p>
-              <p>{{item.goods_brief}}</p>
-              <p>￥{{item.retail_price}}</p>
+              <p>{{item.goodsBrief}}</p>
+              <p>￥{{item.retailPrice}}</p>
             </li>
           </scroll-view>
         </ul>
@@ -86,14 +86,14 @@
         <ul>
           <scroll-view class="scroll-view" :scroll-x="true">
             <li @click="topicdetail(item.id)" v-for="(item, index) in topicList" :key="index">
-              <img :src="item.item_pic_url" alt="">
+              <img :src="item.itemPicUrl" alt="">
               <div class="btom">
                 <div>
                   <p>{{item.title}}</p>
                   <p>{{item.subtitle}}</p>
                 </div>
                 <div>
-                  {{item.price_info}}元起
+                  {{item.priceInfo}}元起
                 </div>
               </div>
             </li>
@@ -108,7 +108,7 @@
           <div @click="goodsDetail(subitem.id)" v-for="(subitem, subindex) in item.goodsList" :key="subindex">
             <img :src="subitem.list_pic_url" alt="">
             <p>{{subitem.name}}</p>
-            <p>￥{{subitem.retail_price}}</p>
+            <p>￥{{subitem.retailPrice}}</p>
           </div>
           <div @click="categoryList(item.id)">
             <div class="last">
@@ -199,7 +199,8 @@ export default {
       });
     },
     async getData() {
-      const data = await get("/index/index");
+      const data = await get("/shop/index/index");
+      console.log(data);
       this.banner = data.banner;
       this.channel = data.channel;
       this.brandList = data.brandList;

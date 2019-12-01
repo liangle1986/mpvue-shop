@@ -9,13 +9,14 @@
     </div>
     <div class="content">
       <scroll-view class="left" scroll-y="true">
-        <div class="iconText" @click="selectitem(item.id,index)" v-for="(item, index) in listData" :class="[index==nowIndex?'active':'']" :key="index">
+        <div class="iconText" @click="selectitem(item.id,index)" v-for="(item, index) in listData"
+             :class="[index==nowIndex?'active':'']" :key="index">
           {{item.name}}
         </div>
       </scroll-view>
       <scroll-view class="right" scroll-y="true">
         <div class="banner">
-          <img :src="detailData.banner_url" alt="">
+          <img :src="detailData.bannerUrl" alt="">
         </div>
         <div class="title">
           <span>—</span>
@@ -24,7 +25,7 @@
         </div>
         <div class="bottom">
           <div @click="categoryList(item.id)" v-for="(item,index) in detailData.subList" :key="index" class="item">
-            <img :src="item.wap_banner_url" alt="">
+            <img :src="item.wapBannerUrl" alt="">
             <span>{{item.name}}</span>
           </div>
         </div>
@@ -34,50 +35,53 @@
 </template>
 
 <script>
-import { get } from "../../utils";
-export default {
-  created() {},
-  mounted() {
-    //获取列表数据
-    this.getListData();
-    //获取默认右侧数据
-    this.selectitem(this.id, this.nowIndex);
-  },
-  data() {
-    return {
-      id: "1005000",
-      nowIndex: 0,
-      listData: [],
-      detailData: {}
-    };
-  },
-  components: {},
-  methods: {
-    tosearch() {
-      wx.navigateTo({ url: "/pages/search/main" });
-    },
-    async selectitem(id, index) {
-      this.nowIndex = index;
-      const data = await get("/category/currentaction", {
-        id: id
-      });
-      this.detailData = data.data.currentOne;
-    },
-    async getListData() {
-      const data = await get("/category/indexaction");
-      this.listData = data.categoryList;
-    },
-    categoryList(id) {
-      console.log("tiaozhuan");
+  import {get} from "../../utils";
 
-      wx.navigateTo({
-        url: "../categorylist/main?id=" + id
-      });
-    }
-  },
-  computed: {}
-};
+  export default {
+    created() {
+    },
+    mounted() {
+      //获取列表数据
+      this.getListData();
+      //获取默认右侧数据
+      this.selectitem(this.id, this.nowIndex);
+    },
+    data() {
+      return {
+        id: "1005000",
+        nowIndex: 0,
+        listData: [],
+        detailData: {}
+      };
+    },
+    components: {},
+    methods: {
+      tosearch() {
+        wx.navigateTo({url: "/pages/search/main"});
+      },
+      async selectitem(id, index) {
+        this.nowIndex = index;
+        const data = await get("/shop/category/"+id, {
+          id: id
+        });
+        this.detailData = data;
+      },
+      async getListData() {
+        const data = await get("/shop/category/index", {parentId: 0});
+        this.listData = data;
+        console.log(this.listData);
+      },
+      categoryList(id) {
+        console.log("tiaozhuan");
+
+        wx.navigateTo({
+          url: "../categorylist/main?id=" + id
+        });
+      }
+    },
+    computed: {}
+  };
 </script>
 <style lang='scss' scoped>
-@import "./style";
+  @import "./style";
 </style>

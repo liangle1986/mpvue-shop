@@ -7,13 +7,13 @@
     </scroll-view>
     <div class="info">
       <p>{{currentNav.name}}</p>
-      <p>{{currentNav.front_desc}}</p>
+      <p>{{currentNav.frontDesc}}</p>
     </div>
     <div class="list" v-if="goodsList.length!=0">
       <div @click="goodsDetail(item.id)" class="item" v-for="(item, index) in goodsList" :key="index">
-        <img :src="item.list_pic_url" alt="">
+        <img :src="item.listPicUrl" alt="">
         <p class="name">{{item.name}}</p>
-        <p class="price">￥{{item.retail_price}}</p>
+        <p class="price">￥{{item.retailPrice}}</p>
       </div>
     </div>
     <div v-else class="none">
@@ -47,9 +47,10 @@ export default {
   methods: {
     async changeTab(index, id) {
       this.nowIndex = index;
-      const listdata = await get("/goods/goodsList", {
+      const listdata = await get("/shop/goods/goodsList", {
         categoryId: id
       });
+      console.log(listdata);
       this.goodsList = listdata.data;
       this.currentNav = listdata.currentNav;
       //需要让导航滚动到可见区域
@@ -58,15 +59,16 @@ export default {
       }
     },
     async getAllData() {
-      const navdata = await get("/category/categoryNav", {
+      const navdata = await get("/shop/category/categoryNav", {
         id: this.categoryId
       });
-      this.navData = navdata.navData;
+      this.navData = navdata.data;
       this.currentNav = navdata.currentNav;
       for (let i = 0; i < this.navData.length; i++) {
         const id = this.navData[i].id;
         if (id == this.currentNav.id) {
           this.nowIndex = i;
+          this.categoryId= this.currentNav.id;
         }
       }
 
@@ -76,7 +78,7 @@ export default {
       } else {
         this.scrollLeft = 0;
       }
-      const listdata = await get("/goods/goodsList", {
+      const listdata = await get("/shop/goods/goodsList", {
         categoryId: this.categoryId
       });
       this.goodsList = listdata.data;

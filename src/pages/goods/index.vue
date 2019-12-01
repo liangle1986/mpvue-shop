@@ -4,7 +4,7 @@
       <swiper class="swiper-container" indicator-dots="true" autoplay="true" interval="3000" duration="1000">
         <block v-for="(item, index) in gallery " :key="index">
           <swiper-item class="swiper-item">
-            <image :src="item.img_url" class="slide-image" />
+            <image :src="item.imgUrl" class="slide-image" />
           </swiper-item>
         </block>
       </swiper>
@@ -18,9 +18,9 @@
     <div class="goods-info">
       <div class="c">
         <p>{{info.name}}</p>
-        <p>{{info.goods_brief}}</p>
-        <p>￥{{info.retail_price}}</p>
-        <div v-if="brand.name" class="brand">
+        <p>{{info.goodsBrief}}</p>
+        <p>￥{{info.retailPrice}}</p>
+        <div v-if="brand" class="brand">
           <p>{{brand.name}}</p>
         </div>
       </div>
@@ -34,7 +34,7 @@
       <div></div>
     </div> -->
 
-    <div v-if="attribute.length!=0" class="attribute">
+    <div v-if="attribute && attribute.length!=0" class="attribute">
       <div class="head">
         商品参数
       </div>
@@ -76,9 +76,9 @@
       </div>
       <div class="sublist">
         <div @click="togoodsDetail(subitem.id)" v-for="(subitem, subindex) in productList" :key="subindex">
-          <img :src="subitem.list_pic_url" alt="">
+          <img :src="subitem.listPicUrl" alt="">
           <p>{{subitem.name}}</p>
-          <p>￥{{subitem.retail_price}}</p>
+          <p>￥{{subitem.retailPrice}}</p>
         </div>
       </div>
     </div>
@@ -110,11 +110,11 @@
     <div class="attr-pop" :class="[showpop ? 'fadeup' : 'fadedown']">
       <div class="top">
         <div class="left">
-          <img :src="info.primary_pic_url" alt="">
+          <img :src="info.primaryPicUrl" alt="">
         </div>
         <div class="right">
           <div>
-            <p>价格￥{{info.retail_price}}</p>
+            <p>价格￥{{info.retailPrice}}</p>
             <p>请选择数量</p>
           </div>
         </div>
@@ -159,12 +159,12 @@ export default {
   onShareAppMessage() {
     console.log(this.info.name);
     console.log(this.info.id);
-    console.log(this.gallery[0].img_url);
+    console.log(this.gallery[0].imgUrl);
 
     return {
       title: this.info.name,
       path: "/pages/goods/main?id=" + this.info.id,
-      imageUrl: this.gallery[0].img_url //拿第一张商品的图片
+      imageUrl: this.gallery[0].imgUrl //拿第一张商品的图片
     };
   },
   data() {
@@ -220,7 +220,7 @@ export default {
           console.log(this.goodsId);
           console.log(this.openId);
 
-          const data = await post("/order/submitAction", {
+          const data = await post("/shop/order/submitAction", {
             goodsId: this.goodsId,
             openId: this.openId,
             allPrise: this.allPrise
@@ -238,7 +238,7 @@ export default {
     async collect() {
       if (toLogin()) {
         this.collectFlag = !this.collectFlag;
-        const data = await post("/collect/addcollect", {
+        const data = await post("/shop/collect/addcollect", {
           openId: this.userInfo.openId,
           goodsId: this.goodsId
         });
@@ -257,7 +257,7 @@ export default {
             });
             return false;
           }
-          const data = await post("/cart/addCart", {
+          const data = await post("/shop/cart/addCart", {
             openId: this.userInfo.openId,
             goodsId: this.goodsId,
             number: this.number
@@ -285,21 +285,23 @@ export default {
       // });
     },
     async goodsDetail() {
-      const data = await get("/goods/detailaction", {
+      const data = await get("/shop/goods/detailaction", {
         id: this.id,
         openId: this.openId
       });
       this.gallery = data.gallery;
       this.info = data.info;
-      this.allPrise = data.info.retail_price;
+      this.allPrise = data.info.retailPrice;
       this.goodsId = data.info.id;
       this.brand = data.brand;
       this.attribute = data.attribute;
-      this.goods_desc = data.info.goods_desc;
+      this.goods_desc = data.info.goodsDesc;
       this.issueList = data.issue;
       this.collectFlag = data.collected;
       this.allnumber = data.allnumber;
       this.productList = data.productList;
+
+      console.log(this.gallery);
     },
     showType() {
       this.showpop = !this.showpop;

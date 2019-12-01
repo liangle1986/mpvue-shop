@@ -10,14 +10,14 @@
       <div @click="cancel">取消</div>
     </div>
     <div class="searchtips" v-if="words">
-      <div @click="searchWords" v-if="tipsData.length!=0" :data-value="item.name" v-for="(item,index) in tipsData" :key="index">
-        {{ item.name }}
+      <div @click="searchWords" v-if="tipsData" :data-value="item.keyword" v-for="(item,index) in tipsData" :key="index">
+        {{ item.keyword }}
       </div>
       <div v-if="tipsData.length==0" class="nogoods">
         数据库暂无此类商品...
       </div>
     </div>
-    <div class="history" v-if="historyData.length!=0">
+    <div class="history" v-if="historyData">
       <div class="t">
         <div>历史记录</div>
         <div @click="clearHistory">
@@ -41,17 +41,17 @@
       </div>
     </div>
     <!--商品列表  -->
-    <div v-if="listData.length!=0" class="goodsList">
+    <div v-if="listData" class="goodsList">
       <div class="sortnav">
         <div @click="changeTab(0)" :class="[0==nowIndex ?'active':'']">综合</div>
         <div @click="changeTab(1)" class="price" :class="[1==nowIndex ?'active':'', order =='desc'? 'desc':'asc']">价格</div>
         <div @click="changeTab(2)" :class="[2==nowIndex ?'active':'']">分类</div>
       </div>
       <div class="sortlist">
-        <div @click="goodsDetail(item.id)" v-for="(item, index) in listData" :key="index" :class="[(listData.length)%2==0?'active':'none']" class="item">
+        <div @click="goodsDetail(item.id)" v-for="(item, index) in listData" :key="index" v-if="listData" :class="[(listData.length)%2==0?'active':'none']" class="item">
           <img :src="item.list_pic_url" alt="">
           <p class="name">{{item.name}}</p>
-          <p class="price">￥{{item.retail_price}}</p>
+          <p class="price">￥{{item.retailPrice}}</p>
         </div>
       </div>
     </div>
@@ -108,7 +108,7 @@ export default {
     },
     async getlistData() {
       //获取商品列表
-      const data = await get("/search/helperaction", {
+      const data = await get("/shop/search/helper", {
         keyword: this.words,
         order: this.order
       });
@@ -125,7 +125,7 @@ export default {
       this.getlistData();
     },
     async clearHistory() {
-      const data = await post("/search/clearhistoryAction", {
+      const data = await del("/search/clearhistory", {
         openId: this.openid
       });
       console.log(data);
@@ -136,7 +136,7 @@ export default {
     async searchWords(e) {
       var vaule = e.currentTarget.dataset.value;
       this.words = vaule || this.words;
-      const data = await post("/search/addhistoryaction", {
+      const data = await post("/shop/search", {
         openId: this.openid,
         keyword: vaule || this.words
       });
@@ -147,12 +147,12 @@ export default {
       this.getlistData();
     },
     async getHotData(first) {
-      const data = await get("/search/indexaction?openId=" + this.openid);
+      const data = await get("/shop/search/index?openId=" + this.openid);
       this.hotData = data.hotKeywordList;
       this.historyData = data.historyData;
     },
     async tipsearch(e) {
-      const data = await get("/search/helperaction", {
+      const data = await get("/shop/search/helper", {
         keyword: this.words
       });
       this.tipsData = data.keywords;

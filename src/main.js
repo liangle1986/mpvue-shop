@@ -25,7 +25,7 @@ export default {
     "window": {
       "backgroundTextStyle": "light",
       "navigationBarBackgroundColor": "#fff",
-      "navigationBarTitleText": "科比",
+      "navigationBarTitleText": "物物网商城",
       "navigationBarTextStyle": "black"
     },
     "tabBar": {

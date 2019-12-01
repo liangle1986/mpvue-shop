@@ -20,10 +20,21 @@ export function formatTime(date) {
 
 //-------------------------------------------------------------------------请求的封装
 
-const host = "http://118.25.222.68:5757/heyushuo";
-export { host };
+// const host = "https://www.ywuwu.com";
+
+const host = "http://localhost:9999";
+
+let token = wx.getStorageSync("token_type") + " " + wx.getStorageSync("access_token");
+export {host, token};
+
 //请求封装
-function request(url, method, data, header = {}) {
+function request(url, method, data, header = {
+  "content-type": "application/json", // 默认值
+  "Authorization": token
+}) {
+  if (!token) {
+    header.Authorization = "Basic bXl3dXd1Om15d3V3dQ==";
+  }
   wx.showLoading({
     title: "加载中" //数据请求前loading
   });
@@ -32,28 +43,46 @@ function request(url, method, data, header = {}) {
       url: host + url, //仅为示例，并非真实的接口地址
       method: method,
       data: data,
-      header: {
-        "content-type": "application/json" // 默认值
-      },
-      success: function(res) {
+      header: header,
+      success: function (res) {
         wx.hideLoading();
-        resolve(res.data);
+        resolve(res.data.data);
       },
-      fail: function(error) {
+      fail: function (error) {
         wx.hideLoading();
         reject(false);
       },
-      complete: function() {
+      complete: function (res) {
+        console.log(res);
+        const status = res.statusCode || 200;
+        if (status === 401) {
+          // getOpenid();
+          wx.removeStorageSync("userInfo");
+          toLogin();
+          // wx.navigateTo({
+          //   url: "/pages/index/main"
+          // });
+        }
         wx.hideLoading();
       }
     });
   });
 }
+
 export function get(url, data) {
   return request(url, "GET", data);
 }
+
 export function post(url, data) {
   return request(url, "POST", data);
+}
+
+export function del(url, data) {
+  return request(url, "DELETE", data);
+}
+
+export function put(url, data) {
+  return request(url, "PUT", data);
 }
 
 //-------------------------------------------------------------------------请求的封装
@@ -62,12 +91,13 @@ export function post(url, data) {
 
 export function toLogin() {
   const userInfo = wx.getStorageSync("userInfo");
+  console.log("登陆跳转页面");
   if (!userInfo) {
     wx.navigateTo({
       url: "/pages/login/main"
     });
   } else {
-    return true;
+    return userInfo;
   }
 }
 
@@ -90,28 +120,120 @@ export function getStorageOpenid() {
 }
 
 export function getOpenid() {
-  // wx.login({
-  //   success: res => {
-  //     if (res.code) {
-  //       //发起网络请求
-  //       wx.request({
-  //         url: 'https://api.weixin.qq.com/sns/jscode2session',
-  //         data: {
-  //           "appid": "wx601ce71bde7b9add",
-  //           "secret": "abed5421d88eb8236e933c6e42d5c14e",
-  //           "js_code": res.code,
-  //           "grant_type": "authorization_code"
-  //         },
-  //         success: function (data) {
-  //           var openid = data.data.openid;
-  //           wx.setStorageSync("openid", openid);
-  //         }
-  //       })
-  //     } else {
-  //       console.log('登录失败！' + res.errMsg)
-  //     }
-  //   },
-  //   fail: () => {},
-  //   complete: () => {}
-  // });
+  wx.login({
+    success: logRes => {
+      if (logRes.code) {
+        getUserInfo(logRes);
+
+      } else {
+        console.log('登录失败！' + res.errMsg)
+      }
+    },
+    fail: () => {
+
+    },
+    complete: () => {
+
+    }
+  });
+}
+
+/**
+ * 获取用户信息
+ * @param logRes 登陆code
+ */
+export async function getUserInfo(logRes) {
+  wx.getUserInfo({
+    success: InfoRes => {
+
+      wx.setStorageSync("nickName", InfoRes.userInfo.nickName);
+      wx.setStorageSync("avatarUrl", InfoRes.userInfo.avatarUrl);
+      const code = logRes['code'];
+      const grant_type = 'mobile';
+      const rawData = InfoRes['rawData'];
+      const signature = InfoRes['signature'];
+      const encryptedData = InfoRes['encryptedData'];
+      const iv = InfoRes['iv'];
+      const signtype = InfoRes['st'];
+      const data = {
+        state: "MINI",
+        tenantId:1,
+        code: code,
+        rawData: rawData,
+        signature: signature,
+        encryptedData: encryptedData,
+        iv: iv,
+        signtype: signtype
+      };
+
+      // const mydata = request(host + '/auth/mobile/token/social','post',{mobile: JSON.stringify(data), grant_type},{
+      //    "Content-Type": "application/x-www-form-urlencoded",
+      //    'Authorization': "Basic cGlnOnBpZw=="
+      //  });
+      //  wx.setStorageSync("userInfo", JSON.parse(rawData));
+      //  console.log(mydata);
+      //  if(mydata){
+      //    wx.setStorageSync("access_token", mydata.data.access_token);
+      //    wx.setStorageSync("token_type", mydata.data.token_type);
+      //    getMyUserInfo();
+      //  }
+
+      //发起网络请求
+      wx.request(
+        {
+          url: host + '/auth/mobile/token/social',
+          data: {mobile: JSON.stringify(data), grant_type},
+          method: "POST",
+          header: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            'Authorization': "Basic bXl3dXd1Om15d3V3dQ==",
+            'TENANT-ID':1
+          },
+          success: function (data) {
+
+            wx.setStorageSync("userInfo", JSON.parse(rawData));
+            wx.setStorageSync("access_token", data.data.access_token);
+            wx.setStorageSync("token_type", data.data.token_type);
+            wx.setStorageSync("refresh_token", data.data.refresh_token);
+            // getMyUserInfo();
+            wx.request(
+              {
+                url: host + '/admin/user/info',
+                method: "get",
+                header: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                  'Authorization': data.data.token_type + " " + data.data.access_token
+                },
+                success: function (datas) {
+                  console.log(datas.data.data);
+                  const openid = datas.data.data.sysUser.wxOpenid;
+                  if (openid != null) {
+                    wx.setStorageSync("openid", openid);
+                  }
+                }
+              });
+            wx.navigateBack({//返回
+              delta: 1
+            })
+          }
+        });
+    }
+  });
+
+}
+
+export async function getMyUserInfo() {
+  const data = await get('/admin/user/info');
+  console.log(data);
+
+  const openid = data.sysUser.wxOpenid;
+  const userInfo = wx.getStorageSync("userInfo");
+  console.log(openid);
+  if (userInfo != null) {
+    // userInfo.openId = openid;
+    wx.setStorageSync("openid", openid);
+    // wx.setStorageSync("userInfo", userInfo);
+  }
+
+  return data;
 }

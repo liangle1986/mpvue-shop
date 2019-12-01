@@ -79,7 +79,7 @@ export default {
       this.address = value[0] + " " + value[1] + " " + value[2];
     },
     async getDetail() {
-      const data = await get("/address/detailAction", {
+      const data = await get("/shop/address/detailAction", {
         id: this.id
       });
       var detail = data.data;
@@ -103,7 +103,7 @@ export default {
       //   openId: _this.openId,
       //   addressId: _this.id
       // };
-      const data = await post("/address/saveAction", {
+      const data = await post("/shop/address/saveAction", {
         userName: _this.userName,
         telNumber: _this.telNumber,
         address: _this.address,

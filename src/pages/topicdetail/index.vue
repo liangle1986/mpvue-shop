@@ -8,7 +8,7 @@
     <div class="list">
       <p class="title">专题推荐</p>
       <div v-for="(item, index) in recommendList" :key="index" class="item">
-        <img :src="item.scene_pic_url" alt="">
+        <img :src="item.scenePicUrl" alt="">
         <p>{{item.title}}</p>
       </div>
     </div>
@@ -36,10 +36,11 @@ export default {
   },
   methods: {
     async getListData() {
-      const data = await get("/topic/detailaction", {
+      const data = await get("/shop/topic/detailaction", {
         id: this.id
       });
-      this.goods_desc = data.data.content;
+      console.log(data);
+      this.goods_desc = data.content;
       this.recommendList = data.recommendList;
     }
   },

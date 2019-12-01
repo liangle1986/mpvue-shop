@@ -116,7 +116,7 @@
         });
       },
       async getDetail() {
-        const data = await get("/order/detailAction", {
+        const data = await get("/shop/order/detailAction", {
           openId: this.openId,
           addressId: this.addressId
         });

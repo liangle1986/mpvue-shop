@@ -41,7 +41,7 @@ export default {
   components: {},
   methods: {
     async getData(first) {
-      const data = await get("/brand/listaction", { page: this.page });
+      const data = await get("/shop/brand/listaction", { page: this.page });
       this.total = data.total;
       if (first) {
         this.listData = data.data;

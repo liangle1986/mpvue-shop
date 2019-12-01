@@ -3,12 +3,12 @@
     <ul class="list">
       <li @click="topicDetail(item.id)" v-for="(item, index) in topicList" :key="index">
         <div class="t-img">
-          <img :src="item.scene_pic_url" alt="">
+          <img :src="item.scenePicUrl" alt="">
         </div>
         <div class="info">
           <p>{{item.title}}</p>
           <p>{{item.subtitle}}</p>
-          <p>{{item.price_info}}元起</p>
+          <p>{{item.priceInfo}}元起</p>
         </div>
       </li>
     </ul>
@@ -45,15 +45,15 @@ export default {
   components: {},
   methods: {
     async getListData(first) {
-      const data = await get("/topic/listaction", {
-        page: this.page
+      const data = await get("/shop/topic/page", {
+        current: this.page
       });
-      this.total = data.total;
+      this.total = data.pages;
       if (first) {
-        this.topicList = data.data;
+        this.topicList = data.records;
       } else {
         //上拉加载跟多
-        this.topicList = this.topicList.concat(data.data);
+        this.topicList = this.topicList.concat(data.records);
       }
     },
     topicDetail(id) {
