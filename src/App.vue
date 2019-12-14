@@ -22,12 +22,11 @@ export default {
     // var openId = userInfo.openId;
     // wx.setStorageSync("userInfo", userInfo);
     // wx.setStorageSync("openId", openId);
-    console.log("app created and cache logs by setStorageSync");
     //获取openid
     // wx.setStorageSync("access_token", "bXl3dXd1Om15d3V3dQ==");
-    if (!wx.getStorageSync('userInfo')) {
-      getOpenid();
-    }
+    // if (!wx.getStorageSync('userInfo')) {
+    //   getOpenid();
+    // }
   }
 };
 </script>

@@ -32,7 +32,6 @@
         this.avator = this.userInfo.avatarUrl;
         console.log(this.avator);
       }
-      console.log("========1111111111111]");
     },
     created() {},
     mounted() {},

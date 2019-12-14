@@ -20,9 +20,9 @@ export function formatTime(date) {
 
 //-------------------------------------------------------------------------请求的封装
 
-// const host = "https://www.ywuwu.com";
+const host = "https://www.ywuwu.com";
 
-const host = "http://localhost:9999";
+// const host = "http://localhost:9999";
 
 let token = wx.getStorageSync("token_type") + " " + wx.getStorageSync("access_token");
 export {host, token};
@@ -56,9 +56,9 @@ function request(url, method, data, header = {
         console.log(res);
         const status = res.statusCode || 200;
         if (status === 401) {
-          // getOpenid();
           wx.removeStorageSync("userInfo");
-          toLogin();
+          wx.removeStorageSync("access_token");
+          getOpenid();
           // wx.navigateTo({
           //   url: "/pages/index/main"
           // });

@@ -205,7 +205,7 @@ export default {
       }
     },
     async bug() {
-      if (toLogin()) {
+      // if (toLogin()) {
         if (this.showpop) {
           if (this.number == 0) {
             wx.showToast({
@@ -220,7 +220,7 @@ export default {
           console.log(this.goodsId);
           console.log(this.openId);
 
-          const data = await post("/shop/order/submitAction", {
+          const data = await post("/shop/order/submit", {
             goodsId: this.goodsId,
             openId: this.openId,
             allPrise: this.allPrise
@@ -233,7 +233,7 @@ export default {
         } else {
           this.showpop = true;
         }
-      }
+      // }
     },
     async collect() {
       if (toLogin()) {
