@@ -45,12 +45,31 @@
 
       async submitMes() {
         var _this = this;
-        const data = await post('/feedback/submitAction', {
-          openId: this.userInfo.openId,
+        if(_this.content == null || _this.content == ''){
+          wx.showToast({
+            title: '亲，别忘了填写反馈信息哦！', //提示的内容,
+            icon: 'none', //图标,
+            duration: 2000, //延迟时间,
+            mask: true, //显示透明蒙层，防止触摸穿透,
+          })
+          return
+        }
+        if(_this.phone == null || _this.phone == ''){
+          wx.showToast({
+            title: '亲，别忘了填写联系方式哦！', //提示的内容,
+            icon: 'none', //图标,
+            duration: 2000, //延迟时间,
+            mask: true, //显示透明蒙层，防止触摸穿透,
+          })
+          return
+        }
+        const data = await post('/shop/feedback', {
+          userId: this.userInfo.openId,
           name: this.userInfo.nickName,
           content: this.content,
-          phone: this.phone
-        })
+          mobile: this.phone,
+          feedType: 0
+      })
         if (data.data) {
           wx.showToast({
             title: '提交成功', //提示的内容,

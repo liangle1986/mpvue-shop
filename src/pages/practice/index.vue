@@ -73,7 +73,7 @@ export default {
 
   methods: {
     onShareAppMessage(res) {
-      console.log(res);
+      // console.log(res);
       return {
         title: "自定义转发标题",
         path: "/pages/index",
@@ -125,7 +125,7 @@ export default {
         success: function(res) {
           // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
           var tempFilePaths = res.tempFilePaths;
-          console.log(res.tempFilePaths);
+          // console.log(res.tempFilePaths);
           _this.imgUrl = res.tempFilePaths;
         }
       });

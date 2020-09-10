@@ -61,18 +61,15 @@
       },
       async selectitem(id, index) {
         this.nowIndex = index;
-        const data = await get("/shop/category/"+id, {
-          id: id
-        });
-        this.detailData = data;
+        const data = await get("/shop/category/"+id);
+        this.detailData = data.data;
       },
       async getListData() {
         const data = await get("/shop/category/index", {parentId: 0});
-        this.listData = data;
-        console.log(this.listData);
+        this.listData = data.data;
+
       },
       categoryList(id) {
-        console.log("tiaozhuan");
 
         wx.navigateTo({
           url: "../categorylist/main?id=" + id

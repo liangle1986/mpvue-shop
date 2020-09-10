@@ -3,7 +3,7 @@
     <div class="section">
       <input @input="bindInput" placeholder="搜索" v-model="keywords" focus="true" />
     </div>
-    <scroll-view :scroll-y="true" class="addcont" style="height: 500rpx;">
+    <scroll-view :scroll-y="true" class="addcont" style="height: 300rpx;">
       <div class="result" @touchstart="bindSearch(item.name)" v-for="(item, index) in tips" :key="index">
         {{item.name}}
       </div>
@@ -80,7 +80,7 @@ export default {
               id: data[0].id,
               latitude: data[0].latitude,
               longitude: data[0].longitude,
-              iconPath: data[0].iconPath,
+              iconPath: data[0]. iconPath,
               width: data[0].width,
               height: data[0].height
             }

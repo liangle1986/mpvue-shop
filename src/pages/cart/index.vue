@@ -12,7 +12,7 @@
            :key="index">
         <div class="con" :style="item.textStyle">
           <div class="left">
-            <div class="icon" @click="changeColor(index,item.goods_id)"
+            <div class="icon" @click="changeColor(index,item.goodsId)"
                  :class="[ Listids[index] ? 'active' : '',{active:allcheck}]"></div>
             <div class="img">
               <img :src="item.listPicUrl" alt="">
@@ -24,7 +24,12 @@
           </div>
           <div class="right">
             <div class="num">
-              x{{item.number}}
+              <div class="count">
+                <div @click="reduce(item.number, item.goodsId)" class="cut">-</div>
+                <input class="number" disabled="" v-model="item.number" />
+                <div @click="add(item.number, item.goodsId)" class="add">+</div>
+              </div>
+              <!--{{item.number}}-->
             </div>
           </div>
         </div>
@@ -59,13 +64,16 @@
   import {
     get,
     post,
+    del,
     login,
+    put,
     getStorageOpenid
   } from "../../utils";
 
   export default {
     onShow() {
-      this.openId = getStorageOpenid();
+      this.userInfo = login();
+      this.openId = this.userInfo.openId;
       this.getListData();
     },
     created() {
@@ -185,16 +193,17 @@
           }
         }
         var goodsId = newgoodsid.join(",");
-        const data = await post("/shop/order/submitAction", {
-          goodsId: goodsId,
-          openId: this.openId,
-          allPrise: this.allPrise
+        // await post("/shop/order/submit", {
+        //   goodsId: goodsId,
+        //   userId: this.openId,
+        //   allPrice: this.allPrise
+        // }).then(d=>{
+        //   if(d.code === 0){
+        //   }
+        // });
+        wx.navigateTo({
+          url: "/pages/order/main?goodsId="+ goodsId + "&sourceType=1"
         });
-        if (data) {
-          wx.navigateTo({
-            url: "/pages/order/main"
-          });
-        }
       },
       async delGoods(id, index) {
         var _this = this;
@@ -205,9 +214,7 @@
             if (res.confirm) {
 
               _this.Listids.splice(index, 1);
-              const data = del("/cart/" + id, {
-                id: id
-              }).then(() => {
+              const data = del("/shop/cart/"+id).then(() => {
                 _this.getListData();
               });
             } else if (res.cancel) {
@@ -219,14 +226,16 @@
         });
       },
       async getListData() {
-        const data = await get("/shop/cart/cartList", {
+        await get("/shop/cart/cartList", {
           openId: this.openId
+        }).then(d=>{
+          const data= d;
+          for (var i = 0; i < data.data.length; i++) {
+            data.data[i].textStyle = "";
+            data.data[i].textStyle1 = "";
+          }
+          this.listData = data.data;
         });
-        for (var i = 0; i < data.data.length; i++) {
-          data.data[i].textStyle = "";
-          data.data[i].textStyle1 = "";
-        }
-        this.listData = data.data;
       },
       allCheck() {
         //先清空
@@ -234,8 +243,6 @@
         if (this.allcheck) {
           this.allcheck = false;
         } else {
-          console.log("选择全部");
-
           this.allcheck = true;
           //循环遍历所有的商品id
           for (let i = 0; i < this.listData.length; i++) {
@@ -252,6 +259,36 @@
         } else {
           this.$set(this.Listids, index, id);
         }
+      },
+      // 数量添加
+      add(number, goodsId) {
+        this.listData.forEach(d=>{
+          if(d.goodsId == goodsId) {
+            d.number = number + 1;
+            this.updateCartNumber(d.id, d.number);
+            return;
+          }
+        })
+      },
+      //移除数量
+      reduce(number, goodsId) {
+        if (number > 1) {
+          this.listData.forEach(d=>{
+            if(d.goodsId == goodsId) {
+              d.number = number - 1;
+              this.updateCartNumber(d.id, d.number);
+              return;
+            }
+          })
+        } else {
+          return false;
+        }
+      },
+      updateCartNumber(id, number){
+         put("/shop/cart", {
+          id: id,
+          number: number
+        })
       }
     },
     computed: {

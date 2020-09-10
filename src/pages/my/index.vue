@@ -28,9 +28,7 @@
       // 可以通过 wx.getSetting 先查询一下用户是否授权了 "scope.record" 这个 scope
       if (login()) {
         this.userInfo = login();
-        console.log(this.userInfo);
         this.avator = this.userInfo.avatarUrl;
-        console.log(this.avator);
       }
     },
     created() {},
@@ -45,7 +43,7 @@
         listData: [{
             title: "我的订单",
             icon: "icon-unie64a",
-            url: ""
+            url: "/pages/myorder/main"
           },
           {
             title: "优惠券",

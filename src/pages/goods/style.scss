@@ -114,7 +114,34 @@
       background-size: 100% 100%;
     }
   }
-
+  .sortnav {
+    display: flex;
+    //position: fixed;
+    background: #fff;
+    width: 100%;
+    height: 78rpx;
+    line-height: 78rpx;
+    div {
+      width: 250rpx;
+      height: 100%;
+      text-align: center;
+    }
+    .active {
+      color: #b4282d;
+    }
+    .price {
+      background: url(//yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/no-3127092a69.png) 165rpx center no-repeat;
+      background-size: 15rpx 21rpx;
+    }
+    .active.desc {
+      background: url(http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/down-95e035f3e5.png) 165rpx center no-repeat;
+      background-size: 15rpx 21rpx;
+    }
+    .active.asc {
+      background: url(http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/up-636b92c0a5.png) 165rpx center no-repeat;
+      background-size: 15rpx 21rpx;
+    }
+  }
   .attribute {
     padding: 20rpx 30rpx;
     background: #fff;
@@ -142,6 +169,61 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+      }
+    }
+  }
+  .ment{
+    padding: 20rpx 30rpx;
+    background: #fff;
+    margin-bottom: 20rpx;
+
+    .head {
+      font-size: 38rpx;
+      padding: 20rpx 0;
+    }
+    .content{
+      //display: flex;
+      background: #f7f7f7;
+      padding: 20rpx 0;
+      margin: 20rpx;
+
+      div:nth-child(1) {
+        //width: 100rem;
+        font-size: 30rpx;
+        padding-bottom: 10rpx;
+        color: #999;
+      }
+
+      div:nth-child(2) {
+        //flex: 1;
+        overflow: hidden;
+        display: block;
+        line-height: 25rpx;
+        letter-spacing: 0;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        white-space: normal;
+        //height: 30rpx;
+        //max-height: 30rpx;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp:3;
+      }
+      div:nth-child(3) {
+        //width: 100rem;
+        font-size: 20rpx;
+        padding-left: 10rpx;
+        margin-top: 10rpx;
+        color: #999;
+      }
+    }
+    .button{
+      font-size: 20rpx;
+      button{
+        font-size: 20rpx;
+        border: 1rpx solid rgb(153, 34, 41);
+        border-radius: 20rpx;
+        align-items: center;
       }
     }
   }
@@ -292,8 +374,8 @@
   .attr-pop {
     position: fixed;
     width: 100%;
-    height: 500rpx;
-    bottom: -500rpx;
+    height: 900rpx;
+    bottom: -900rpx;
     transition: all 400ms ease;
     box-sizing: border-box;
     padding: 30rpx;
@@ -340,33 +422,65 @@
       }
     }
 
-    .b {
-      .count {
-        width: 322rpx;
-        height: 71rpx;
-        line-height: 71rpx;
-        display: flex;
-        border: 1rpx solid #ccc;
-        margin-top: 20rpx;
-
-        div {
-          width: 90rpx;
-          text-align: center;
+    .spec {
+      height: 550rpx;
+      overflow-x: auto;
+      .specData {
+        height: 100rpx;
+        margin-top: 30rpx;
+        .valueData {
+          display: flex;
+          .icon {
+            //height: 125rpx;
+            //width: 34rpx;
+            //background: url(http://nos.netease.com/mailpub/hxm/yanxuan-wap/p/20150730/style/img/icon-normal/checkbox-0e09baa37e.png) no-repeat center center;
+            //background-size: 34rpx 34rpx;
+            //background-color: #8a8a8a;
+            border: 1rpx solid #ccc;
+            padding: 5rpx;
+            border-radius: 8rpx;
+            margin: 0 15rpx;
+          }
+          .icon.active {
+            //background: url(http://nos.netease.com/mailpub/hxm/yanxuan-wap/p/20150730/style/img/icon-normal/checkbox-checked-822e54472a.png) no-repeat center center;
+            //background-size: 34rpx 34rpx;
+            border: 2rpx solid red;
+            padding: 5rpx;
+            color: red;
+            border-radius: 8rpx;
+            margin: 0 15rpx;
+          }
         }
+      }
+      .b {
+        margin-top: 30rpx;
+        .count {
+          width: 322rpx;
+          height: 71rpx;
+          line-height: 71rpx;
+          display: flex;
+          border: 1rpx solid #ccc;
+          margin-top: 20rpx;
 
-        input {
-          flex: 1;
-          height: 100%;
-          text-align: center;
-          border-left: 1rpx solid #ccc;
-          border-right: 1rpx solid #ccc;
+          div {
+            width: 90rpx;
+            text-align: center;
+          }
+
+          input {
+            flex: 1;
+            height: 100%;
+            text-align: center;
+            border-left: 1rpx solid #ccc;
+            border-right: 1rpx solid #ccc;
+          }
         }
       }
     }
   }
 
   .fadeup {
-    transform: translateY(-500rpx); // transition: all 0.4s ease;
+    transform: translateY(-900rpx); // transition: all 0.4s ease;
   }
 
   .bottom-fixed {

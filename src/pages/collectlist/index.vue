@@ -5,9 +5,9 @@
     </div>
     <div class="sublist">
       <div @click="goodsDetail(subitem.id)" v-for="(subitem, subindex) in collectlist" :key="subindex">
-        <img :src="subitem.list_pic_url" alt="">
+        <img :src="subitem.listPicUrl" alt="">
         <p>{{subitem.name}}</p>
-        <p>￥{{subitem.retail_price}}</p>
+        <p>￥{{subitem.retailPrice}}</p>
       </div>
     </div>
   </div>
@@ -21,7 +21,7 @@
   export default {
     onShow() {
       this.openId = getStorageOpenid();
-      console.log(this.openId)
+      // console.log(this.openId)
       this.getlist();
     },
     created() {},
@@ -37,10 +37,10 @@
     components: {},
     methods: {
       async getlist() {
-        const data = await get('/collect/listAction', {
-          openId: this.openId
+        const data = await get('/shop/collect/index', {
+          userId: this.openId
         })
-        this.collectlist = data.collectGoodsList;
+        this.collectlist = data.data.collectGoodsList;
       },
       goodsDetail(id) {
         wx.navigateTo({

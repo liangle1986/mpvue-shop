@@ -46,9 +46,8 @@
     methods: {
       async getDetail() {
         const data = await get("/shop/brand/detail", {id: this.id});
-        this.detailData = data.data;
-        this.goodsList = data.goodsList;
-        console.log(this.detailData);
+        this.detailData = data.data.data;
+        this.goodsList = data.data.goodsList;
       }
     },
     computed: {}

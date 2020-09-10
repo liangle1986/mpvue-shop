@@ -122,6 +122,7 @@
         background: #b4282d;
         color: #fff;
       }
+
     }
   }
   .nogoods {
@@ -131,6 +132,30 @@
       display: block;
       width: 258rpx;
       height: 258rpx;
+    }
+  }
+
+  .num {
+    .count {
+      width: 180rpx;
+      height: 71rpx;
+      line-height: 71rpx;
+      display: flex;
+      border: 1rpx solid #ccc;
+      margin-top: 20rpx;
+
+      div {
+        width: 50rpx;
+        text-align: center;
+      }
+
+      input {
+        flex: 1;
+        height: 100%;
+        text-align: center;
+        border-left: 1rpx solid #ccc;
+        border-right: 1rpx solid #ccc;
+      }
     }
   }
 }

@@ -22,6 +22,7 @@ export function formatTime(date) {
 
 const host = "https://www.ywuwu.com";
 
+// const host = "http://47.100.240.160:9999";
 // const host = "http://localhost:9999";
 
 let token = wx.getStorageSync("token_type") + " " + wx.getStorageSync("access_token");
@@ -30,9 +31,10 @@ export {host, token};
 //请求封装
 function request(url, method, data, header = {
   "content-type": "application/json", // 默认值
-  "Authorization": token
+  "Authorization": wx.getStorageSync("token_type") + " " + wx.getStorageSync("access_token"),
+  "TENANT-ID": 1
 }) {
-  if (!token) {
+  if (header.Authorization == null || header.Authorization.trim()== '') {
     header.Authorization = "Basic bXl3dXd1Om15d3V3dQ==";
   }
   wx.showLoading({
@@ -46,18 +48,21 @@ function request(url, method, data, header = {
       header: header,
       success: function (res) {
         wx.hideLoading();
-        resolve(res.data.data);
+        resolve(res.data);
       },
       fail: function (error) {
+        wx.removeStorageSync("userInfo");
+        wx.removeStorageSync("access_token");
+        wx.removeStorageSync("openId");
         wx.hideLoading();
         reject(false);
       },
       complete: function (res) {
         console.log(res);
-        const status = res.statusCode || 200;
+        const status = res.code || 200;
         if (status === 401) {
           wx.removeStorageSync("userInfo");
-          wx.removeStorageSync("access_token");
+          wx.removeStorageSync("openId");
           getOpenid();
           // wx.navigateTo({
           //   url: "/pages/index/main"
@@ -78,7 +83,7 @@ export function post(url, data) {
 }
 
 export function del(url, data) {
-  return request(url, "DELETE", data);
+  return request(url, "delete", data);
 }
 
 export function put(url, data) {
@@ -91,7 +96,6 @@ export function put(url, data) {
 
 export function toLogin() {
   const userInfo = wx.getStorageSync("userInfo");
-  console.log("登陆跳转页面");
   if (!userInfo) {
     wx.navigateTo({
       url: "/pages/login/main"
@@ -103,8 +107,13 @@ export function toLogin() {
 
 export function login() {
   const userInfo = wx.getStorageSync("userInfo");
-  if (userInfo) {
+  const openId = wx.getStorageSync("openId");
+
+  if (openId) {
+    userInfo.openId = openId;
     return userInfo;
+  } else {
+    getOpenid();
   }
 }
 
@@ -112,6 +121,7 @@ export function login() {
 
 export function getStorageOpenid() {
   const openId = wx.getStorageSync("openId");
+
   if (openId) {
     return openId;
   } else {
@@ -155,9 +165,8 @@ export async function getUserInfo(logRes) {
       const encryptedData = InfoRes['encryptedData'];
       const iv = InfoRes['iv'];
       const signtype = InfoRes['st'];
-      const data = {
-        state: "MINI",
-        tenantId:1,
+      const state = "MINI";
+      let userData = {
         code: code,
         rawData: rawData,
         signature: signature,
@@ -166,55 +175,53 @@ export async function getUserInfo(logRes) {
         signtype: signtype
       };
 
-      // const mydata = request(host + '/auth/mobile/token/social','post',{mobile: JSON.stringify(data), grant_type},{
-      //    "Content-Type": "application/x-www-form-urlencoded",
-      //    'Authorization': "Basic cGlnOnBpZw=="
-      //  });
-      //  wx.setStorageSync("userInfo", JSON.parse(rawData));
-      //  console.log(mydata);
-      //  if(mydata){
-      //    wx.setStorageSync("access_token", mydata.data.access_token);
-      //    wx.setStorageSync("token_type", mydata.data.token_type);
-      //    getMyUserInfo();
-      //  }
 
       //发起网络请求
       wx.request(
         {
           url: host + '/auth/mobile/token/social',
-          data: {mobile: JSON.stringify(data), grant_type},
+          data: {mobile: state + '@' + code, grant_type},
           method: "POST",
           header: {
             "Content-Type": "application/x-www-form-urlencoded",
             'Authorization': "Basic bXl3dXd1Om15d3V3dQ==",
-            'TENANT-ID':1
+            'TENANT-ID': 1
           },
           success: function (data) {
+
+            userData.id = data.data.user_id;
+
 
             wx.setStorageSync("userInfo", JSON.parse(rawData));
             wx.setStorageSync("access_token", data.data.access_token);
             wx.setStorageSync("token_type", data.data.token_type);
             wx.setStorageSync("refresh_token", data.data.refresh_token);
-            // getMyUserInfo();
-            wx.request(
-              {
-                url: host + '/admin/user/info',
-                method: "get",
-                header: {
-                  "Content-Type": "application/x-www-form-urlencoded",
-                  'Authorization': data.data.token_type + " " + data.data.access_token
-                },
-                success: function (datas) {
-                  console.log(datas.data.data);
-                  const openid = datas.data.data.sysUser.wxOpenid;
-                  if (openid != null) {
-                    wx.setStorageSync("openid", openid);
-                  }
-                }
+
+            const openid = data.data.user_id;
+            if (openid != null) {
+              wx.setStorageSync("openId", openid);
+              enditUserInfo({
+                rawData: rawData,
+                signature: signature,
+                encryptedData: encryptedData,
+                iv: iv,
+                signtype: signtype,
+                id: data.data.user_id
               });
+              // put('/admin/user/miniEdit', {
+              //   rawData: rawData,
+              //   signature: signature,
+              //   encryptedData: encryptedData,
+              //   iv: iv,
+              //   signtype: signtype,
+              //   id: data.data.user_id
+              // });
+            }
+
             wx.navigateBack({//返回
               delta: 1
             })
+
           }
         });
     }
@@ -224,11 +231,11 @@ export async function getUserInfo(logRes) {
 
 export async function getMyUserInfo() {
   const data = await get('/admin/user/info');
-  console.log(data);
+  // console.log(data);
 
   const openid = data.sysUser.wxOpenid;
   const userInfo = wx.getStorageSync("userInfo");
-  console.log(openid);
+  // console.log(openid);
   if (userInfo != null) {
     // userInfo.openId = openid;
     wx.setStorageSync("openid", openid);
@@ -236,4 +243,9 @@ export async function getMyUserInfo() {
   }
 
   return data;
+}
+
+
+export async function enditUserInfo(data) {
+  await put('/admin/user/miniEdit', data);
 }

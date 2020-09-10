@@ -177,8 +177,6 @@ export default {
       });
       myAmapFun.getRegeo({
         success: function (data) {
-          //成功回调
-          console.log(data);
           // data[0].regeocodeData.formatted_address
           // _this.cityName = data[0].regeocodeData.formatted_address;
           _this.update({ cityName: data[0].regeocodeData.formatted_address });
@@ -199,15 +197,17 @@ export default {
       });
     },
     async getData() {
-      const data = await get("/shop/index/index");
-      console.log(data);
-      this.banner = data.banner;
-      this.channel = data.channel;
-      this.brandList = data.brandList;
-      this.newGoods = data.newGoods;
-      this.hotGoods = data.hotGoods;
-      this.topicList = data.topicList;
-      this.newCategoryList = data.newCategoryList;
+      const data = await get("/shop/index/index").then(d=>{
+        const td = d.data;
+        this.banner = td.banner;
+        this.channel = td.channel;
+        this.brandList = td.brandList;
+        this.newGoods = td.newGoods;
+        this.hotGoods = td.hotGoods;
+        this.topicList = td.topicList;
+        this.newCategoryList = td.categoryList;
+      });
+
     },
     goodsDetail(id) {
       wx.navigateTo({

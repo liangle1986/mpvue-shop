@@ -1,7 +1,6 @@
 <template>
   <div class="login">
     <div class="logo">
-
     </div>
     <button class="login-btn" open-type="getUserInfo" lang="zh_CN" @getuserinfo="showDoLogin">微信登录</button>
   </div>
@@ -17,7 +16,6 @@
     created() {
     },
     mounted() {
-      console.log(host);
 
       // qcloud.setLoginUrl(host + "/auth/mobile/token/social");
       // qcloud.setLoginUrl("https://wwww.ywuwu.com/admin/social/bind");
@@ -81,6 +79,6 @@
 
 </script>
 <style lang='scss' scoped>
-  @import "./style";
+  @import "./style.scss";
 
 </style>

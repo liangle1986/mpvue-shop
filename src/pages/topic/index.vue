@@ -50,10 +50,10 @@ export default {
       });
       this.total = data.pages;
       if (first) {
-        this.topicList = data.records;
+        this.topicList = data.data.records;
       } else {
         //上拉加载跟多
-        this.topicList = this.topicList.concat(data.records);
+        this.topicList = this.topicList.concat(data.data.records);
       }
     },
     topicDetail(id) {

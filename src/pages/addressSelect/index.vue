@@ -8,13 +8,13 @@
           <div class="addresslist" :style="item.textStyle">
             <div>
               <span>{{item.name}}</span>
-              <div v-if="item.is_default" class="moren">
+              <div v-if="item.isDefault" class="moren">
                 默认
               </div>
             </div>
             <div @click="selAddress(item.id)" class="info">
               <p>{{item.mobile}}</p>
-              <p>{{item.address+item.address_detail}}</p>
+              <p>{{item.provinceName+item.detailInfo}}11</p>
             </div>
             <div @click="toDetail(item.id)"></div>
 
@@ -59,22 +59,20 @@ export default {
       });
     },
     toDetail(id) {
-      console.log(id);
+      // console.log(id);
       wx.navigateTo({
         url: "/pages/addaddress/main?id=" + id
       });
     },
     async getAddressList() {
       var _this = this;
-      const data = await get("/shop/address/getListAction", {
-        openId: _this.openId
-      });
+      const data = await get("/shop/address/list/"+_this.openId);
       for (var i = 0; i < data.data.length; i++) {
         data.data[i].textStyle = "";
         data.data[i].textStyle1 = "";
       }
       this.listData = data.data;
-      console.log(this.listData);
+      // console.log(this.listData);
     },
     wxaddress(index) {
       if (index == 1) {

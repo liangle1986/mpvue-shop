@@ -4,13 +4,15 @@
   background: #fff;
   box-sizing: border-box;
   padding-top: 1rpx;
+
   .logo {
     width: 230rpx;
     height: 80rpx;
-    background: url("../../../static/images/login_2.jpg") no-repeat;
+    background: url('../../../static/images/logo.png') no-repeat;
     background-size: 100% 100%;
     margin: 200rpx auto 0 auto;
   }
+
   .login-btn {
     text-align: center;
     background: #b4a078;

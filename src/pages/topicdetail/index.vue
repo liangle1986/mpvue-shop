@@ -36,12 +36,11 @@ export default {
   },
   methods: {
     async getListData() {
-      const data = await get("/shop/topic/detailaction", {
+      const data = await get("/shop/topic/detail", {
         id: this.id
       });
-      console.log(data);
-      this.goods_desc = data.content;
-      this.recommendList = data.recommendList;
+      this.goods_desc = data.data.content;
+      this.recommendList = data.data.recommendList;
     }
   },
   computed: {}
